@@ -5,10 +5,13 @@ import Log from "./components/Log.jsx";
 import {WINNING_COMBINATIONS} from "./winning-combinations.js";
 import GameOver from "./components/GameOver.jsx";
 
+// 누구의 턴인지 알기 위한 변수
 const PLAYERS = {
     X:'Player 1',
     O:'Player 2'
 }
+
+//초기 게임판 변수.
 const INIITIAL_GAME_BOARD = [
     [null, null, null],
     [null, null, null],
@@ -17,6 +20,7 @@ const INIITIAL_GAME_BOARD = [
 
 function deriveActivePlayer(gameTurns) {
     let currentPlayer = 'X';
+    //객체값을 맨 앞에 저장하기 때문에 gameTurns[0]을 통해 방금 전에 어떤 플레이어가 누른지 알 수 있다.
     if (gameTurns.length > 0 && gameTurns[0].player === 'X') {
         currentPlayer = 'O';
     }
@@ -24,7 +28,7 @@ function deriveActivePlayer(gameTurns) {
 }
 function deriveGameBoard(gameTurns){
     let gameBoard = [...INIITIAL_GAME_BOARD.map(array => [...array])];
-
+    //gameTurns의 값은 {square:{row,col},player:O or X}로 되어 있기 때문에 이렇게 값을 가져올 수 있다.
     for (const turn of gameTurns) {
         const {square, player} = turn;
         const {row, col} = square;
@@ -38,14 +42,14 @@ function deriveGameBoard(gameTurns){
 function deriveWinner(gameBoard, players){
     let winner;
 
+    //WINNING_COMBINATIONS안에는 승리 조건 값을 가져와 현재 gameBoard에 있는 Player가 누군지 찾는다
+    //그리고 Player가 하나로 똑같다면 승리 조건을 만족시킨 것이다.
     for (const combination of WINNING_COMBINATIONS) {
-        const firstSquares = gameBoard[combination[0].row][combination[0].column]; //X or O 들어감
+        const firstSquares = gameBoard[combination[0].row][combination[0].column];
         const secondSquares = gameBoard[combination[1].row][combination[1].column];
         const thridSquares = gameBoard[combination[2].row][combination[2].column];
         if (firstSquares && firstSquares === secondSquares && firstSquares === thridSquares) {
-            winner = players[firstSquares]; // X or O의 이름 호출
-            console.log(firstSquares);
-            console.log(winner);
+            winner = players[firstSquares];
         }
     }
     return winner;
@@ -54,6 +58,8 @@ function deriveWinner(gameBoard, players){
 function App() {
     const [gameTurns, setGameTurns] = useState([]);
     const [players, setPlayers] = useState(PLAYERS);
+    console.log(gameTurns);
+
     //const [hasWinner, setHasWinner] = useState(false); gameTurns에서 확인이 가능하므로 굳이 만들 필요 없음
     //const [activePlayer, setActivePlayer] = useState('X'); // 상위 클래스에서 정보주기 위해 사용
     //gameTurn에 이미 사용자에 대한 정보가 있기 때문에 위에 useState은 필요 없음
@@ -63,7 +69,7 @@ function App() {
     const hasDraw = gameTurns.length === 9 && !winner;
 
     function handleSelectSquare(rowIndex, colIndex) {
-        // setActivePlayer((curActivePlayer) => curActivePlayer === 'X' ? 'O' : 'X'); // GameBoard 상태 변
+        // setActivePlayer((curActivePlayer) => curActivePlayer === 'X' ? 'O' : 'X');
         setGameTurns(prevTurns => {
             const currentPlayer = deriveActivePlayer(prevTurns);
             const updatedTurns = [

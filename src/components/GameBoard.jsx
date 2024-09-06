@@ -1,9 +1,4 @@
-
-
-
 export default function GameBoard({onSelectSquare, board}) {
-
-
     // function handleSelectSquare(rowIndex, colIndex){
     //     setGameBoard((prevGameBoard) => {
     //         const updatedBoard = [...prevGameBoard.map(innerArray=>[...innerArray])];
